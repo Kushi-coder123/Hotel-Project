@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rooms & Suites — Aurum Grand Hotel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #e8c96a;
+      --gold-dim: rgba(201,168,76,0.12);
+      --dark: #0a0a0a;
+      --dark-mid: #111;
+      --dark-card: #141414;
+      --dark-border: rgba(255,255,255,0.08);
+      --text: #f0e8d8;
+      --text-muted: #7a7a7a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: var(--text); font-family: 'Jost', sans-serif; overflow-x: hidden; }
+
+    /* ── NAVBAR ── */
+    .navbar { background: rgba(10,10,10,0.96); backdrop-filter: blur(12px); padding: 0.9rem 0; border-bottom: 1px solid var(--dark-border); }
+    .navbar-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: #fff !important; letter-spacing: 3px; text-decoration: none; }
+    .navbar-brand span { color: var(--gold); }
+    .nav-link { color: rgba(255,255,255,0.7) !important; font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+    .nav-link:hover, .nav-link.active { color: var(--gold) !important; }
+    .btn-nav-book { background: var(--gold); color: var(--dark) !important; padding: 0.45rem 1.3rem !important; font-weight: 500; letter-spacing: 1px; transition: background 0.3s; }
+    .btn-nav-book:hover { background: var(--gold-light) !important; }
+    .navbar-toggler { border-color: rgba(255,255,255,0.2); }
+    .navbar-toggler-icon { filter: invert(1); }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      height: 440px; position: relative;
+      background: url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1600&q=80') center/cover no-repeat;
+      display: flex; align-items: center;
+    }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.65); }
+    .page-hero-content { position: relative; z-index: 1; }
+    .breadcrumb-item a { color: var(--gold); text-decoration: none; font-size: 0.8rem; letter-spacing: 1px; }
+    .breadcrumb-item.active { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+    .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.3); }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 400; color: #fff; }
+    .page-title em { color: var(--gold); font-style: italic; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { background: var(--dark-mid); border-bottom: 1px solid var(--dark-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 100; }
+    .filter-btn {
+      background: none; border: 1px solid var(--dark-border); color: rgba(255,255,255,0.6);
+      padding: 0.45rem 1.2rem; font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s; font-family: 'Jost', sans-serif; border-radius: 100px;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .sort-select { background: var(--dark-card); border: 1px solid var(--dark-border); color: rgba(255,255,255,0.7); padding: 0.45rem 1rem; font-size: 0.78rem; font-family: 'Jost', sans-serif; border-radius: 2px; outline: none; }
+    .sort-select option { background: #1a1a1a; }
+
+    /* ── ROOMS ── */
+    main { padding: 5rem 0; }
+    .room-row {
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      overflow: hidden; margin-bottom: 2rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      display: flex; min-height: 320px;
+    }
+    .room-row:hover { border-color: rgba(201,168,76,0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .room-row-img {
+      width: 400px; flex-shrink: 0; overflow: hidden; position: relative;
+    }
+    .room-row-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .room-row:hover .room-row-img img { transform: scale(1.05); }
+    .room-row-img .badge-abs {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--gold); color: var(--dark);
+      font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 0.8rem; font-weight: 600;
+    }
+    .room-row-img .badge-abs.green { background: #1db954; }
+    .room-row-body { padding: 2.2rem 2.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+    .room-category { color: var(--gold); font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .room-title { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 600; color: #fff; margin-bottom: 0.8rem; }
+    .room-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.75; max-width: 600px; margin-bottom: 1.2rem; }
+    .room-specs { display: flex; gap: 1.8rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .spec-item { display: flex; align-items: center; gap: 0.45rem; color: rgba(255,255,255,0.6); font-size: 0.82rem; }
+    .spec-item i { color: var(--gold); font-size: 0.85rem; }
+    .amenity-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .amenity-tag {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--dark-border);
+      color: rgba(255,255,255,0.55); font-size: 0.72rem; padding: 0.25rem 0.7rem;
+      letter-spacing: 0.5px;
+    }
+    .room-row-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-top: 1.2rem; border-top: 1px solid var(--dark-border); }
+
+    .price-from { color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; }
+    .price-main { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--gold); font-weight: 600; line-height: 1; }
+    .price-main sup { font-size: 1.1rem; vertical-align: super; }
+    .price-main span { font-size: 0.85rem; color: var(--text-muted); font-family: 'Jost', sans-serif; font-weight: 300; }
+    .room-actions { display: flex; gap: 0.8rem; }
+    .btn-details {
+      background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7);
+      padding: 0.6rem 1.5rem; font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s; font-family: 'Jost', sans-serif;
+    }
+    .btn-details:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+    .btn-book {
+      background: var(--gold); color: var(--dark); border: none;
+      padding: 0.6rem 1.8rem; font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: background 0.3s; font-family: 'Jost', sans-serif; font-weight: 500;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-book:hover { background: var(--gold-light); color: var(--dark); }
+
+    /* Modal */
+    .modal-content { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 0; color: var(--text); }
+    .modal-header { border-bottom: 1px solid var(--dark-border); }
+    .modal-footer { border-top: 1px solid var(--dark-border); }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #fff; }
+    .btn-close { filter: invert(1) opacity(0.5); }
+    .modal-img { width: 100%; height: 260px; object-fit: cover; }
+    .modal-amenity { display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.65); font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .modal-amenity i { color: var(--gold); }
+
+    /* Footer */
+    footer { background: #060606; border-top: 1px solid var(--dark-border); padding: 3rem 0 2rem; }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 3px; }
+    .footer-logo span { color: var(--gold); }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; margin-right: 1.5rem; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* Animation */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 992px) {
+      .room-row { flex-direction: column; }
+      .room-row-img { width: 100%; height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="home.html">AURUM <span>GRAND</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="rooms.html">Rooms & Suites</a></li>
+          <li class="nav-item"><a class="nav-link" href="booking.html">Booking</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About & Reviews</a></li>
+          <li class="nav-item ms-2"><a class="nav-link btn-nav-book" href="booking.html">Reserve Now</a></li>
+          <li class="nav-item ms-1"><a class="nav-link" href="login.html"><i class="bi bi-person-circle"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="container page-hero-content">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="home.html">Home</a></li>
+          <li class="breadcrumb-item active">Rooms & Suites</li>
+        </ol>
+      </nav>
+      <div class="page-title">Our <em>Rooms</em> &amp; Suites</div>
+      <p style="color:rgba(255,255,255,0.55);margin-top:0.8rem;font-size:0.95rem;">156 rooms and suites designed to the pinnacle of comfort and refinement.</p>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="container">
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-between">
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="filter-btn active" onclick="filterRooms('all',this)">All Rooms</button>
+          <button class="filter-btn" onclick="filterRooms('classic',this)">Classic</button>
+          <button class="filter-btn" onclick="filterRooms('suite',this)">Suites</button>
+          <button class="filter-btn" onclick="filterRooms('presidential',this)">Presidential</button>
+          <button class="filter-btn" onclick="filterRooms('penthouse',this)">Penthouse</button>
+        </div>
+        <select class="sort-select" onchange="sortRooms(this.value)">
+          <option value="default">Sort: Featured</option>
+          <option value="asc">Price: Low to High</option>
+          <option value="desc">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROOMS LIST -->
+  <main>
+    <div class="container" id="roomsList">
+
+      <!-- Room 1 -->
+      <div class="room-row fade-in" data-category="classic" data-price="8500">
+        <div class="room-row-img">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Deluxe Room"/>
+          <span class="badge-abs">Best Seller</span>
+        </div>
+        <div class="room-row-body">
+          <div class="room-row-top">
+            <div class="room-category">Classic Collection</div>
+            <div class="room-title">Deluxe Room</div>
+            <p class="room-desc">Our signature Deluxe Rooms offer an elevated stay with king-size beds, contemporary furnishings, and sweeping city views. Perfect for business or leisure travellers who seek refined comfort.</p>
+            <div class="room-specs">
+              <span class="spec-item"><i class="bi bi-aspect-ratio"></i> 45 sqm</span>
+              <span class="spec-item"><i class="bi bi-people"></i> 2 Guests</span>
+              <span class="spec-item"><i class="bi bi-eye"></i> City View</span>
+              <span class="spec-item"><i class="bi bi-door-open"></i> Floor: 5–12</span>
+            </div>
+            <div class="amenity-tags">
+              <span class="amenity-tag"><i class="bi bi-wifi me-1"></i>Free WiFi</span>
+              <span class="amenity-tag">Smart TV</span>
+              <span class="amenity-tag">A/C</span>
+              <span class="amenity-tag">Minibar</span>
+              <span class="amenity-tag">Rain Shower</span>
+              <span class="amenity-tag">Desk</span>
+              <span class="amenity-tag">Room Service</span>
+              <span class="amenity-tag">Safe</span>
+            </div>
+          </div>
+          <div class="room-row-footer">
+            <div class="price-block">
+              <div class="price-from">Starting from</div>
+              <div class="price-main"><sup>₹</sup>8,500 <span>/night</span></div>
+            </div>
+            <div class="room-actions">
+              <button class="btn-details" onclick="openModal('deluxe')">View Details</button>
+              <a href="booking.html" class="btn-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 2 -->
+      <div class="room-row fade-in" data-category="classic" data-price="12000">
+        <div class="room-row-img">
+          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Grand Deluxe"/>
+          <span class="badge-abs">Premium</span>
+        </div>
+        <div class="room-row-body">
+          <div class="room-row-top">
+            <div class="room-category">Classic Collection</div>
+            <div class="room-title">Grand Deluxe Room</div>
+            <p class="room-desc">A step above our Deluxe offering, the Grand Deluxe features a larger floor plan, a separate lounge area, and exclusive access to our Executive Lounge on the 18th floor.</p>
+            <div class="room-specs">
+              <span class="spec-item"><i class="bi bi-aspect-ratio"></i> 60 sqm</span>
+              <span class="spec-item"><i class="bi bi-people"></i> 2 Guests</span>
+              <span class="spec-item"><i class="bi bi-eye"></i> Pool View</span>
+              <span class="spec-item"><i class="bi bi-door-open"></i> Floor: 12–18</span>
+            </div>
+            <div class="amenity-tags">
+              <span class="amenity-tag">Free WiFi</span>
+              <span class="amenity-tag">Smart TV</span>
+              <span class="amenity-tag">A/C</span>
+              <span class="amenity-tag">Minibar</span>
+              <span class="amenity-tag">Soaking Tub</span>
+              <span class="amenity-tag">Executive Lounge</span>
+              <span class="amenity-tag">Butler on Call</span>
+            </div>
+          </div>
+          <div class="room-row-footer">
+            <div class="price-block">
+              <div class="price-from">Starting from</div>
+              <div class="price-main"><sup>₹</sup>12,000 <span>/night</span></div>
+            </div>
+            <div class="room-actions">
+              <button class="btn-details" onclick="openModal('grand')">View Details</button>
+              <a href="booking.html" class="btn-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 3 -->
+      <div class="room-row fade-in" data-category="suite" data-price="18000">
+        <div class="room-row-img">
+          <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80" alt="Superior Suite"/>
+          <span class="badge-abs">Popular</span>
+        </div>
+        <div class="room-row-body">
+          <div class="room-row-top">
+            <div class="room-category">Suite Collection</div>
+            <div class="room-title">Superior Suite</div>
+            <p class="room-desc">Our Superior Suites feature a spacious living area, a private dining space, and luxurious bath with deep soaking tub and jacuzzi. Indulge in the highest thread-count linens and personal butler service.</p>
+            <div class="room-specs">
+              <span class="spec-item"><i class="bi bi-aspect-ratio"></i> 90 sqm</span>
+              <span class="spec-item"><i class="bi bi-people"></i> 3 Guests</span>
+              <span class="spec-item"><i class="bi bi-eye"></i> Sea View</span>
+              <span class="spec-item"><i class="bi bi-door-open"></i> Floor: 20–28</span>
+            </div>
+            <div class="amenity-tags">
+              <span class="amenity-tag">Free WiFi</span>
+              <span class="amenity-tag">85" Smart TV</span>
+              <span class="amenity-tag">Jacuzzi</span>
+              <span class="amenity-tag">Private Butler</span>
+              <span class="amenity-tag">Champagne Welcome</span>
+              <span class="amenity-tag">Nespresso Machine</span>
+              <span class="amenity-tag">Living Room</span>
+            </div>
+          </div>
+          <div class="room-row-footer">
+            <div class="price-block">
+              <div class="price-from">Starting from</div>
+              <div class="price-main"><sup>₹</sup>18,000 <span>/night</span></div>
+            </div>
+            <div class="room-actions">
+              <button class="btn-details" onclick="openModal('superior')">View Details</button>
+              <a href="booking.html" class="btn-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 4 -->
+      <div class="room-row fade-in" data-category="presidential" data-price="45000">
+        <div class="room-row-img">
+          <img src="https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&q=80" alt="Presidential Suite"/>
+          <span class="badge-abs green">Exclusive</span>
+        </div>
+        <div class="room-row-body">
+          <div class="room-row-top">
+            <div class="room-category">Presidential Collection</div>
+            <div class="room-title">Presidential Suite</div>
+            <p class="room-desc">The epitome of luxury living. Spanning an entire floor, the Presidential Suite features two master bedrooms, a private dining room, a study, dedicated butler staff, and a private terrace with an infinity plunge pool.</p>
+            <div class="room-specs">
+              <span class="spec-item"><i class="bi bi-aspect-ratio"></i> 280 sqm</span>
+              <span class="spec-item"><i class="bi bi-people"></i> 4 Guests</span>
+              <span class="spec-item"><i class="bi bi-eye"></i> Panoramic 360°</span>
+              <span class="spec-item"><i class="bi bi-door-open"></i> Floor: 35</span>
+            </div>
+            <div class="amenity-tags">
+              <span class="amenity-tag">Free WiFi</span>
+              <span class="amenity-tag">Private Pool</span>
+              <span class="amenity-tag">24/7 Butler</span>
+              <span class="amenity-tag">Private Gym</span>
+              <span class="amenity-tag">Limo Transfer</span>
+              <span class="amenity-tag">Private Chef</span>
+              <span class="amenity-tag">Helipad Access</span>
+              <span class="amenity-tag">Study Room</span>
+            </div>
+          </div>
+          <div class="room-row-footer">
+            <div class="price-block">
+              <div class="price-from">Starting from</div>
+              <div class="price-main"><sup>₹</sup>45,000 <span>/night</span></div>
+            </div>
+            <div class="room-actions">
+              <button class="btn-details" onclick="openModal('presidential')">View Details</button>
+              <a href="booking.html" class="btn-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 5 -->
+      <div class="room-row fade-in" data-category="penthouse" data-price="90000">
+        <div class="room-row-img">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Penthouse"/>
+          <span class="badge-abs green">Ultra Luxury</span>
+        </div>
+        <div class="room-row-body">
+          <div class="room-row-top">
+            <div class="room-category">Penthouse Collection</div>
+            <div class="room-title">The Aurum Penthouse</div>
+            <p class="room-desc">Our crown jewel. The Aurum Penthouse commands the entire top floor with four en-suite bedrooms, a private cinema, a rooftop garden, and a temperature-controlled wine cellar. An address unlike any other.</p>
+            <div class="room-specs">
+              <span class="spec-item"><i class="bi bi-aspect-ratio"></i> 620 sqm</span>
+              <span class="spec-item"><i class="bi bi-people"></i> 8 Guests</span>
+              <span class="spec-item"><i class="bi bi-eye"></i> 360° Skyline</span>
+              <span class="spec-item"><i class="bi bi-door-open"></i> Floor: 38–39</span>
+            </div>
+            <div class="amenity-tags">
+              <span class="amenity-tag">Free WiFi</span>
+              <span class="amenity-tag">4 Bedrooms</span>
+              <span class="amenity-tag">Private Cinema</span>
+              <span class="amenity-tag">Wine Cellar</span>
+              <span class="amenity-tag">Rooftop Garden</span>
+              <span class="amenity-tag">Private Chef</span>
+              <span class="amenity-tag">Security Team</span>
+              <span class="amenity-tag">Helipad</span>
+            </div>
+          </div>
+          <div class="room-row-footer">
+            <div class="price-block">
+              <div class="price-from">Starting from</div>
+              <div class="price-main"><sup>₹</sup>90,000 <span>/night</span></div>
+            </div>
+            <div class="room-actions">
+              <button class="btn-details" onclick="openModal('penthouse')">View Details</button>
+              <a href="booking.html" class="btn-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /roomsList -->
+  </main>
+
+  <!-- ROOM DETAIL MODAL -->
+  <div class="modal fade" id="roomModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Room Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0">
+          <img src="" alt="" class="modal-img" id="modalImg"/>
+          <div class="p-4">
+            <p id="modalDesc" style="color:var(--text-muted);font-size:0.9rem;line-height:1.8;margin-bottom:1.5rem;"></p>
+            <div class="row" id="modalAmenities"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="me-auto">
+            <span style="color:var(--text-muted);font-size:0.75rem;">STARTING FROM</span>
+            <div id="modalPrice" style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);"></div>
+          </div>
+          <button type="button" class="btn-details" data-bs-dismiss="modal">Close</button>
+          <a href="booking.html" class="btn-book">Book This Room</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="footer-logo mb-3">AURUM <span>GRAND</span></div>
+        <div class="footer-links mb-3">
+          <a href="home.html">Home</a>
+          <a href="rooms.html">Rooms</a>
+          <a href="booking.html">Book</a>
+          <a href="about.html">About</a>
+        </div>
+      </div>
+      <div class="footer-copy">© 2024 Aurum Grand Hotel. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Scroll fade-in
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    // Filter
+    function filterRooms(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.room-row').forEach(r => {
+        r.style.display = (cat === 'all' || r.dataset.category === cat) ? 'flex' : 'none';
+      });
+    }
+
+    // Sort
+    function sortRooms(dir) {
+      const list = document.getElementById('roomsList');
+      const rows = Array.from(document.querySelectorAll('.room-row'));
+      if (dir === 'default') return;
+      rows.sort((a, b) => dir === 'asc' ? a.dataset.price - b.dataset.price : b.dataset.price - a.dataset.price);
+      rows.forEach(r => list.appendChild(r));
+    }
+
+    // Modal data
+    const rooms = {
+      deluxe: { title: 'Deluxe Room', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80', price: '₹8,500 / night', desc: 'Our signature Deluxe Rooms offer a refined retreat with king-size pillow-top beds, marble bathrooms with rain shower, and sweeping city views from floor-to-ceiling windows. Thoughtfully designed for both business and leisure travellers.', amenities: ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Minibar', 'Rain Shower', 'Room Service', 'In-room Safe', 'Hair Dryer', 'Bathrobe & Slippers', 'Desk & Chair'] },
+      grand: { title: 'Grand Deluxe Room', img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80', price: '₹12,000 / night', desc: 'An expanded Deluxe experience with a separate lounge area, luxury amenities, and exclusive Executive Lounge access offering breakfast, evening cocktails, and dedicated concierge service.', amenities: ['Free WiFi', 'Smart TV', 'Executive Lounge', 'Soaking Tub', 'Butler on Call', 'Nespresso', 'Minibar', 'Living Area', 'City View', 'Pillow Menu'] },
+      superior: { title: 'Superior Suite', img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80', price: '₹18,000 / night', desc: 'The Superior Suite is a complete living experience with a master bedroom, a spacious living room, private dining for four, and a lavish marble bathroom featuring a deep soaking tub, jacuzzi, and double vanity.', amenities: ['Free WiFi', '85" Smart TV', 'Jacuzzi', 'Private Butler', 'Champagne Welcome', 'Nespresso', 'Living Room', 'Dining Area', 'Walk-in Wardrobe', 'Premium Minibar'] },
+      presidential: { title: 'Presidential Suite', img: 'https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=1200&q=80', price: '₹45,000 / night', desc: 'Spanning the entire 35th floor, the Presidential Suite redefines luxury. Two master bedrooms, a private dining room, study, home cinema, private terrace with plunge pool, and a dedicated butler team ensure an unparalleled experience.', amenities: ['Two Master Bedrooms', 'Private Pool', '24/7 Butler', 'Private Gym', 'Limo Transfer', 'Private Chef', 'Helipad Access', 'Home Cinema', 'Study Room', 'Panoramic View'] },
+      penthouse: { title: 'The Aurum Penthouse', img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80', price: '₹90,000 / night', desc: 'Our ultimate expression of luxury. The Aurum Penthouse spans two floors with four en-suite bedrooms, a private rooftop garden, temperature-controlled wine cellar, private cinema, and a full-time security and butler team.', amenities: ['4 Bedrooms', 'Private Cinema', 'Wine Cellar', 'Rooftop Garden', 'Private Chef', 'Security Team', 'Helipad', 'Smart Home', 'Infinity Terrace', 'Private Elevator'] }
+    };
+
+    function openModal(key) {
+      const r = rooms[key];
+      document.getElementById('modalTitle').textContent = r.title;
+      document.getElementById('modalImg').src = r.img;
+      document.getElementById('modalDesc').textContent = r.desc;
+      document.getElementById('modalPrice').textContent = r.price;
+      const amenRow = document.getElementById('modalAmenities');
+      amenRow.innerHTML = r.amenities.map(a => `<div class="col-6 col-md-4"><div class="modal-amenity"><i class="bi bi-check-circle-fill"></i>${a}</div></div>`).join('');
+      new bootstrap.Modal(document.getElementById('roomModal')).show();
+    }
+  </script>
+</body>
+</html>
